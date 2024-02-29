@@ -1,79 +1,62 @@
-import { useState, useEffect } from 'react';
+import classNames from 'classnames/bind';
+import { useEffect, useReducer } from 'react';
 import Button from '../Button/Button';
 import styles from './JournalForm.module.scss';
-import classNames from 'classnames/bind';
+import { INITIAL_STATE, formReducer } from './JournalForm.state';
 
 const cx = classNames.bind(styles);
-const INITIAL_STATE = {
-  title: true,
-  text: true,
-  date: true
-};
 
 const JournalForm = ({ onSubmit }) => {
-  const [isFormValidState, setIsFormValidState] = useState(INITIAL_STATE);
-
+  const [state, dispatch] = useReducer(formReducer, INITIAL_STATE);
+  const { isValid, values, isFormReadyToSubmit } = state;
   const addJournalItem = (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.target);
-    const formProps = Object.fromEntries(formData);
+    // const formData = new FormData(event.target);
+    // const formProps = Object.fromEntries(formData);
 
-    let isFormValid = true;
-
-    if (!formProps.title?.trim().length) {
-      setIsFormValidState((state) => ({ ...state, title: false }));
-      isFormValid = false;
-    } else {
-      setIsFormValidState((state) => ({ ...state, title: true }));
-    }
-
-    if (!formProps.text?.trim().length) {
-      setIsFormValidState((state) => ({ ...state, text: false }));
-      isFormValid = false;
-    } else {
-      setIsFormValidState((state) => ({ ...state, text: true }));
-    }
-
-    if (!formProps.date) {
-      setIsFormValidState((state) => ({ ...state, date: false }));
-      isFormValid = false;
-    } else {
-      setIsFormValidState((state) => ({ ...state, date: true }));
-    }
-
-    if (!isFormValid) return;
-
-    onSubmit(formProps);
+    dispatch({ type: 'SUBMIT_FORM', payload: values });
   };
+
+  const onChange = (event) => {
+    dispatch({
+      type: 'SET_VALUE',
+      payload: { [event.target.name]: event.target.value }
+    });
+  };
+
+  useEffect(() => {
+    if (isFormReadyToSubmit) {
+      onSubmit(values);
+      dispatch({ type: 'CLEAR_FORM' });
+    }
+  }, [isFormReadyToSubmit, values, onSubmit]);
 
   useEffect(() => {
     let timerId;
 
-    if (
-      !isFormValidState.date ||
-      !isFormValidState.text ||
-      !isFormValidState.title
-    ) {
+    if (!isValid.date || !isValid.text || !isValid.title) {
       timerId = setTimeout(() => {
-        setIsFormValidState(INITIAL_STATE);
+        dispatch({ type: 'RESET_VALIDITY' });
       }, 2000);
     }
 
     return () => {
       clearTimeout(timerId);
     };
-  }, [isFormValidState]);
+  }, [isValid]);
 
   return (
     <form className={styles['journal-form']} onSubmit={addJournalItem}>
       <div>
         <input
+          value={values.title}
+          onChange={onChange}
           type="text"
           name="title"
           className={cx({
             'input-title': true,
-            invalid: !isFormValidState.title
+            invalid: !isValid.title
           })}
         />
       </div>
@@ -83,12 +66,14 @@ const JournalForm = ({ onSubmit }) => {
           <span>Дата</span>
         </label>
         <input
+          value={values.date}
+          onChange={onChange}
           type="date"
           name="date"
           id="date"
           className={cx({
             input: true,
-            invalid: !isFormValidState.date
+            invalid: !isValid.date
           })}
         />
       </div>
@@ -98,6 +83,8 @@ const JournalForm = ({ onSubmit }) => {
           <span>Метки</span>
         </label>
         <input
+          value={values.tag}
+          onChange={onChange}
           type="text"
           name="tag"
           className={cx({
@@ -106,12 +93,14 @@ const JournalForm = ({ onSubmit }) => {
         />
       </div>
       <textarea
+        value={values.text}
+        onChange={onChange}
         name="text"
         cols="30"
         rows="10"
         className={cx({
           input: true,
-          invalid: !isFormValidState.text
+          invalid: !isValid.text
         })}
       />
       <Button text="Сохранить" />

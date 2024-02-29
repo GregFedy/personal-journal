@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import Button from '../Button/Button';
 import styles from './JournalForm.module.scss';
 import { INITIAL_STATE, formReducer } from './JournalForm.state';
@@ -9,6 +9,11 @@ const cx = classNames.bind(styles);
 const JournalForm = ({ onSubmit }) => {
   const [state, dispatch] = useReducer(formReducer, INITIAL_STATE);
   const { isValid, values, isFormReadyToSubmit } = state;
+
+  const titleRef = useRef();
+  const dateRef = useRef();
+  const textRef = useRef();
+
   const addJournalItem = (event) => {
     event.preventDefault();
 
@@ -25,6 +30,20 @@ const JournalForm = ({ onSubmit }) => {
     });
   };
 
+  const focusError = (isValid) => {
+    switch (true) {
+      case !isValid.title:
+        titleRef.current.focus();
+        break;
+      case !isValid.date:
+        dateRef.current.focus();
+        break;
+      case !isValid.text:
+        textRef.current.focus();
+        break;
+    }
+  };
+
   useEffect(() => {
     if (isFormReadyToSubmit) {
       onSubmit(values);
@@ -36,6 +55,7 @@ const JournalForm = ({ onSubmit }) => {
     let timerId;
 
     if (!isValid.date || !isValid.text || !isValid.title) {
+      focusError(isValid);
       timerId = setTimeout(() => {
         dispatch({ type: 'RESET_VALIDITY' });
       }, 2000);
@@ -52,6 +72,7 @@ const JournalForm = ({ onSubmit }) => {
         <input
           value={values.title}
           onChange={onChange}
+          ref={titleRef}
           type="text"
           name="title"
           className={cx({
@@ -68,6 +89,7 @@ const JournalForm = ({ onSubmit }) => {
         <input
           value={values.date}
           onChange={onChange}
+          ref={dateRef}
           type="date"
           name="date"
           id="date"
@@ -95,6 +117,7 @@ const JournalForm = ({ onSubmit }) => {
       <textarea
         value={values.text}
         onChange={onChange}
+        ref={textRef}
         name="text"
         cols="30"
         rows="10"

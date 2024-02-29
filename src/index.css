@@ -1,28 +1,67 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/*
+  Custom CSS Reset by Josh W. Comeau
+  Source: https://www.joshwcomeau.com/css/custom-css-reset/
+*/
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
+/* Reset margin */
+* {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+}
+
+/* Body styles */
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Media elements */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Form elements */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Text elements */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* Creates a new stacking context for the element */
+#root {
+  isolation: isolate;
+}
+
+/* Root styles */
+:root {
+  font-family: 'Source Sans 3', sans-serif;
+  color-scheme: light dark;
+  color: rgba(255 255 255 / 87%);
+  background-color: #181818;
+  font-synthesis: none;
+  text-rendering: optimizelegibility;
+  -moz-osx-font-smoothing: grayscale;
 }

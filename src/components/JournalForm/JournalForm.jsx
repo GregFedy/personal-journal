@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import { useEffect, useReducer, useRef } from 'react';
 import Button from '../Button/Button';
+import Input from '../Input/Input';
 import styles from './JournalForm.module.scss';
 import { INITIAL_STATE, formReducer } from './JournalForm.state';
 
@@ -69,16 +70,14 @@ const JournalForm = ({ onSubmit }) => {
   return (
     <form className={styles['journal-form']} onSubmit={addJournalItem}>
       <div>
-        <input
+        <Input
           value={values.title}
           onChange={onChange}
           ref={titleRef}
           type="text"
           name="title"
-          className={cx({
-            'input-title': true,
-            invalid: !isValid.title
-          })}
+          appearance="title"
+          isValid={isValid.title}
         />
       </div>
       <div className={styles['form-row']}>
@@ -86,17 +85,14 @@ const JournalForm = ({ onSubmit }) => {
           <img src="/calendar.svg" alt="Calendar icon" />
           <span>Дата</span>
         </label>
-        <input
+        <Input
           value={values.date}
           onChange={onChange}
           ref={dateRef}
           type="date"
           name="date"
           id="date"
-          className={cx({
-            input: true,
-            invalid: !isValid.date
-          })}
+          isValid={isValid.date}
         />
       </div>
       <div className={styles['form-row']}>
@@ -104,15 +100,7 @@ const JournalForm = ({ onSubmit }) => {
           <img src="/folder.svg" alt="Folder icon" />
           <span>Метки</span>
         </label>
-        <input
-          value={values.tag}
-          onChange={onChange}
-          type="text"
-          name="tag"
-          className={cx({
-            input: true
-          })}
-        />
+        <Input value={values.tag} onChange={onChange} type="text" name="tag" />
       </div>
       <textarea
         value={values.text}

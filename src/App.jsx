@@ -7,6 +7,7 @@ import JournalList from './components/JournalList/JournalList';
 import Body from './layouts/Body/Body';
 import JournalForm from './components/JournalForm/JournalForm';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { UserProvider } from './context/UserContext';
 
 const mapItems = (items) => {
   if (!items) {
@@ -23,25 +24,26 @@ function App() {
     setItems([
       ...mapItems(items),
       {
+        ...newJournalItem,
         id: uuidv4(),
-        title: newJournalItem.title,
-        date: new Date(newJournalItem.date),
-        text: newJournalItem.text
+        date: new Date(newJournalItem.date)
       }
     ]);
   };
 
   return (
-    <div className={styles['app']}>
-      <LeftPanel>
-        <Header />
-        <JournalAddButton />
-        <JournalList journalItems={mapItems(items)} />
-      </LeftPanel>
-      <Body>
-        <JournalForm onSubmit={addJournalItem} />
-      </Body>
-    </div>
+    <UserProvider>
+      <div className={styles['app']}>
+        <LeftPanel>
+          <Header />
+          <JournalAddButton />
+          <JournalList journalItems={mapItems(items)} />
+        </LeftPanel>
+        <Body>
+          <JournalForm onSubmit={addJournalItem} />
+        </Body>
+      </div>
+    </UserProvider>
   );
 }
 

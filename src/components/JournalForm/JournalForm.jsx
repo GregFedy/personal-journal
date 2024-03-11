@@ -4,11 +4,14 @@ import Button from '../Button/Button';
 import Input from '../Input/Input';
 import styles from './JournalForm.module.scss';
 import { INITIAL_STATE, formReducer } from './JournalForm.state';
+import { useContext } from 'react';
+import { UserContext } from '../../context/UserContext';
 
 const cx = classNames.bind(styles);
 
 const JournalForm = ({ onSubmit }) => {
   const [state, dispatch] = useReducer(formReducer, INITIAL_STATE);
+  const { userId } = useContext(UserContext);
   const { isValid, values, isFormReadyToSubmit } = state;
 
   const titleRef = useRef();
@@ -44,6 +47,10 @@ const JournalForm = ({ onSubmit }) => {
         break;
     }
   };
+
+  useEffect(() => {
+    dispatch({ type: 'SET_VALUE', payload: { userId } });
+  }, [userId]);
 
   useEffect(() => {
     if (isFormReadyToSubmit) {

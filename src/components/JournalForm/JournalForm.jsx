@@ -121,7 +121,7 @@ const JournalForm = ({ onSubmit }) => {
           invalid: !isValid.text
         })}
       />
-      <Button text="Сохранить" />
+      <Button>Сохранить</Button>
     </form>
   );
 };

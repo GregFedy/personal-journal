@@ -9,7 +9,7 @@ import { UserContext } from '../../context/UserContext';
 
 const cx = classNames.bind(styles);
 
-const JournalForm = ({ onSubmit }) => {
+const JournalForm = ({ onSubmit, data }) => {
   const [state, dispatch] = useReducer(formReducer, INITIAL_STATE);
   const { userId } = useContext(UserContext);
   const { isValid, values, isFormReadyToSubmit } = state;
@@ -49,6 +49,12 @@ const JournalForm = ({ onSubmit }) => {
   };
 
   useEffect(() => {
+    if (data) {
+      dispatch({ type: 'SET_VALUE', payload: { ...data } });
+    }
+  }, [data]);
+
+  useEffect(() => {
     dispatch({ type: 'SET_VALUE', payload: { userId } });
   }, [userId]);
 
@@ -56,8 +62,9 @@ const JournalForm = ({ onSubmit }) => {
     if (isFormReadyToSubmit) {
       onSubmit(values);
       dispatch({ type: 'CLEAR_FORM' });
+      dispatch({ type: 'SET_VALUE', payload: { userId } });
     }
-  }, [isFormReadyToSubmit, values, onSubmit]);
+  }, [isFormReadyToSubmit, values, onSubmit, userId]);
 
   useEffect(() => {
     let timerId;
@@ -93,7 +100,9 @@ const JournalForm = ({ onSubmit }) => {
           <span>Дата</span>
         </label>
         <Input
-          value={values.date}
+          value={
+            values.date ? new Date(values.date).toISOString().slice(0, 10) : ''
+          }
           onChange={onChange}
           ref={dateRef}
           type="date"

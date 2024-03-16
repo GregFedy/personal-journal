@@ -4,7 +4,7 @@ import CardButton from '../CardButton/CardButton';
 import JournalItem from '../JournalItem/JournalItem';
 import styles from './JournalList.module.scss';
 
-const JournalList = ({ journalItems }) => {
+const JournalList = ({ journalItems, setItem }) => {
   const { userId } = useContext(UserContext);
   const sortJournalItems = (a, b) => {
     if (a.date < b.date) {
@@ -24,7 +24,7 @@ const JournalList = ({ journalItems }) => {
         .filter((el) => el.userId === userId)
         .sort(sortJournalItems)
         .map((el) => (
-          <CardButton key={el.id}>
+          <CardButton key={el.id} onClick={() => setItem(el)}>
             <JournalItem title={el.title} date={el.date} text={el.text} />
           </CardButton>
         ))}

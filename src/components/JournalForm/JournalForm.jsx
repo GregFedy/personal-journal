@@ -55,10 +55,12 @@ const JournalForm = ({ onSubmit, data, onDelete }) => {
   };
 
   useEffect(() => {
-    if (data) {
-      dispatch({ type: 'SET_VALUE', payload: { ...data } });
+    if (!data) {
+      dispatch({ type: 'CLEAR_FORM' });
+      dispatch({ type: 'SET_VALUE', payload: { userId } });
     }
-  }, [data]);
+    dispatch({ type: 'SET_VALUE', payload: { ...data } });
+  }, [data, userId]);
 
   useEffect(() => {
     dispatch({ type: 'SET_VALUE', payload: { userId } });
@@ -99,7 +101,7 @@ const JournalForm = ({ onSubmit, data, onDelete }) => {
           appearance="title"
           isValid={isValid.title}
         />
-        {data.id && (
+        {data?.id && (
           <button
             className={styles['delete']}
             type="button"

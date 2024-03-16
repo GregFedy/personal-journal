@@ -46,6 +46,10 @@ function App() {
     }
   };
 
+  const deleteJournalItem = (id) => {
+    setItems([...items.filter((el) => el.id !== id)]);
+  };
+
   return (
     <UserProvider>
       <div className={styles['app']}>
@@ -58,7 +62,11 @@ function App() {
           />
         </LeftPanel>
         <Body>
-          <JournalForm onSubmit={addJournalItem} data={selectedItem} />
+          <JournalForm
+            onSubmit={addJournalItem}
+            onDelete={deleteJournalItem}
+            data={selectedItem}
+          />
         </Body>
       </div>
     </UserProvider>

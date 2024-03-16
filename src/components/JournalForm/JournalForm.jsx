@@ -9,7 +9,7 @@ import { UserContext } from '../../context/UserContext';
 
 const cx = classNames.bind(styles);
 
-const JournalForm = ({ onSubmit, data }) => {
+const JournalForm = ({ onSubmit, data, onDelete }) => {
   const [state, dispatch] = useReducer(formReducer, INITIAL_STATE);
   const { userId } = useContext(UserContext);
   const { isValid, values, isFormReadyToSubmit } = state;
@@ -25,6 +25,12 @@ const JournalForm = ({ onSubmit, data }) => {
     // const formProps = Object.fromEntries(formData);
 
     dispatch({ type: 'SUBMIT_FORM', payload: values });
+  };
+
+  const deleteJournalItem = () => {
+    onDelete(data.id);
+    dispatch({ type: 'CLEAR_FORM' });
+    dispatch({ type: 'SET_VALUE', payload: { userId } });
   };
 
   const onChange = (event) => {
@@ -83,7 +89,7 @@ const JournalForm = ({ onSubmit, data }) => {
 
   return (
     <form className={styles['journal-form']} onSubmit={addJournalItem}>
-      <div>
+      <div className={styles['form-row']}>
         <Input
           value={values.title}
           onChange={onChange}
@@ -93,6 +99,15 @@ const JournalForm = ({ onSubmit, data }) => {
           appearance="title"
           isValid={isValid.title}
         />
+        {data.id && (
+          <button
+            className={styles['delete']}
+            type="button"
+            onClick={() => deleteJournalItem()}
+          >
+            <img src="/trash.svg" alt="Удалить" />
+          </button>
+        )}
       </div>
       <div className={styles['form-row']}>
         <label htmlFor="date" className={styles['form-label']}>
